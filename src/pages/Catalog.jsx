@@ -18,14 +18,14 @@ const Catalog = () => {
   const [categoryId, setCategoryId] = useState(null)
   const [notFound, setNotFound] = useState(false)
 
-  // 🔹 Utility to normalize category name → slug
+  // 🔹 Utility: normalize category name → slug
   const slugify = (str) =>
     str
       .trim()
       .toLowerCase()
       .replace(/\s+/g, "-")
 
-  // 🔹 Fetch all categories and find matching one
+  // 🔹 Fetch categories and match slug
   useEffect(() => {
     const getCategories = async () => {
       try {
@@ -76,97 +76,94 @@ const Catalog = () => {
     )
   }
 
-  // 🔹 Category not found OR backend error
+  // 🔹 Error state
   if (notFound || !catalogPageData?.success) {
     return <Error />
   }
 
+  const { selectedCategory, differentCategory, mostSellingCourses } =
+    catalogPageData.data
+
   return (
     <>
-      {/* Hero Section */}
-      <div className="box-content bg-richblack-800 px-4">
-        <div className="mx-auto flex min-h-[260px] max-w-maxContentTab flex-col justify-center gap-4 lg:max-w-maxContent">
+      {/* ================= HERO SECTION ================= */}
+      <section className="w-full bg-richblack-800">
+        <div className="mx-auto flex max-w-maxContent flex-col gap-4 px-4 py-16">
           <p className="text-sm text-richblack-300">
             Home / Catalog /{" "}
             <span className="text-yellow-25">
-              {catalogPageData.data.selectedCategory.name}
+              {selectedCategory.name}
             </span>
           </p>
 
-          <p className="text-3xl text-richblack-5">
-            {catalogPageData.data.selectedCategory.name}
-          </p>
+          <h1 className="text-3xl font-semibold text-richblack-5 md:text-4xl">
+            {selectedCategory.name}
+          </h1>
 
           <p className="max-w-[870px] text-richblack-200">
-            {catalogPageData.data.selectedCategory.description}
+            {selectedCategory.description}
           </p>
         </div>
-      </div>
+      </section>
 
-      {/* Section 1 */}
-      <div className="mx-auto box-content w-full max-w-maxContentTab px-4 py-12 lg:max-w-maxContent">
+      {/* ================= SECTION 1 ================= */}
+      <section className="mx-auto w-full max-w-maxContent px-4 py-12">
         <div className="section_heading">Courses to get you started</div>
 
         <div className="my-4 flex border-b border-b-richblack-600 text-sm">
-          <p
+          <button
             className={`px-4 py-2 ${
               active === 1
                 ? "border-b border-b-yellow-25 text-yellow-25"
                 : "text-richblack-50"
-            } cursor-pointer`}
+            }`}
             onClick={() => setActive(1)}
           >
             Most Popular
-          </p>
+          </button>
 
-          <p
+          <button
             className={`px-4 py-2 ${
               active === 2
                 ? "border-b border-b-yellow-25 text-yellow-25"
                 : "text-richblack-50"
-            } cursor-pointer`}
+            }`}
             onClick={() => setActive(2)}
           >
             New
-          </p>
+          </button>
         </div>
 
-        <CourseSlider
-          Courses={catalogPageData.data.selectedCategory.courses}
-        />
-      </div>
+        <CourseSlider Courses={selectedCategory.courses} />
+      </section>
 
-      {/* Section 2 */}
-      <div className="mx-auto box-content w-full max-w-maxContentTab px-4 py-12 lg:max-w-maxContent">
+      {/* ================= SECTION 2 ================= */}
+      <section className="mx-auto w-full max-w-maxContent px-4 py-12">
         <div className="section_heading">
-          Top courses in {catalogPageData.data.differentCategory.name}
+          Top courses in {differentCategory.name}
         </div>
 
         <div className="py-8">
-          <CourseSlider
-            Courses={catalogPageData.data.differentCategory.courses}
-          />
+          <CourseSlider Courses={differentCategory.courses} />
         </div>
-      </div>
+      </section>
 
-      {/* Section 3 */}
-      <div className="mx-auto box-content w-full max-w-maxContentTab px-4 py-12 lg:max-w-maxContent">
+      {/* ================= SECTION 3 ================= */}
+      <section className="mx-auto w-full max-w-maxContent px-4 py-12">
         <div className="section_heading">Frequently Bought</div>
 
         <div className="py-8">
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
-            {catalogPageData.data.mostSellingCourses
-              ?.slice(0, 4)
-              .map((course, i) => (
-                <Course_Card
-                  key={i}
-                  course={course}
-                  Height="h-[400px]"
-                />
-              ))}
+            {mostSellingCourses?.slice(0, 4).map((course, index) => (
+              <Course_Card
+                key={index}
+                course={course}
+                Height="h-[400px]"
+              />
+            ))}
           </div>
         </div>
-      </div>
+      </section>
 
       <Footer />
     </>
