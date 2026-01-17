@@ -109,35 +109,41 @@ const Catalog = () => {
 
 
       {/* ================= SECTION 1 ================= */}
-      <section className="mx-auto w-full max-w-maxContent px-4 py-12">
-        <div className="section_heading">Courses to get you started</div>
+<section className="relative z-20 mx-auto w-full max-w-maxContent px-4 py-12">
+  <h2 className="section_heading mb-6 relative z-30">
+    Courses to get you started
+  </h2>
 
-        <div className="my-4 flex border-b border-b-richblack-600 text-sm">
-          <button
-            className={`px-4 py-2 ${
-              active === 1
-                ? "border-b border-b-yellow-25 text-yellow-25"
-                : "text-richblack-50"
-            }`}
-            onClick={() => setActive(1)}
-          >
-            Most Popular
-          </button>
+  <div className="my-4 flex border-b border-b-richblack-600 text-sm relative z-30">
+    <button
+      className={`px-4 py-2 ${
+        active === 1
+          ? "border-b border-b-yellow-25 text-yellow-25"
+          : "text-richblack-50"
+      }`}
+      onClick={() => setActive(1)}
+    >
+      Most Popular
+    </button>
 
-          <button
-            className={`px-4 py-2 ${
-              active === 2
-                ? "border-b border-b-yellow-25 text-yellow-25"
-                : "text-richblack-50"
-            }`}
-            onClick={() => setActive(2)}
-          >
-            New
-          </button>
-        </div>
+    <button
+      className={`px-4 py-2 ${
+        active === 2
+          ? "border-b border-b-yellow-25 text-yellow-25"
+          : "text-richblack-50"
+      }`}
+      onClick={() => setActive(2)}
+    >
+      New
+    </button>
+  </div>
 
-        <CourseSlider Courses={selectedCategory.courses} />
-      </section>
+  {/* 🔑 slider pushed down & layered correctly */}
+  <div className="relative z-10 mt-8">
+    <CourseSlider Courses={selectedCategory.courses} />
+  </div>
+</section>
+
 
       {/* ================= SECTION 2 ================= */}
       <section className="mx-auto w-full max-w-maxContent px-4 py-12">
