@@ -110,7 +110,8 @@ const Catalog = () => {
 
       {/* ================= SECTION 1 ================= */}
 <section className="relative z-20 mx-auto w-full max-w-maxContent px-4 py-12">
-  <h2 className="section_heading mb-6 relative z-30">
+  <h2 className="section_heading mb-6 text-richblack-5 relative z-30">
+
     Courses to get you started
   </h2>
 
