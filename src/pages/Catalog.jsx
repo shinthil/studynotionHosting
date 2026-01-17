@@ -87,24 +87,26 @@ const Catalog = () => {
   return (
     <>
       {/* ================= HERO SECTION ================= */}
-      <section className="w-full bg-richblack-800">
-        <div className="mx-auto flex max-w-maxContent flex-col gap-4 px-4 py-16">
-          <p className="text-sm text-richblack-300">
-            Home / Catalog /{" "}
-            <span className="text-yellow-25">
-              {selectedCategory.name}
-            </span>
-          </p>
+<section className="w-full bg-richblack-800 pt-20">
+  {/* pt-20 = pushes content below fixed navbar */}
+  <div className="mx-auto flex max-w-maxContent flex-col gap-4 px-4 py-16 relative z-10">
+    <p className="text-sm text-richblack-300">
+      Home / Catalog /{" "}
+      <span className="text-yellow-25">
+        {selectedCategory.name}
+      </span>
+    </p>
 
-          <h1 className="text-3xl font-semibold text-richblack-5 md:text-4xl">
-            {selectedCategory.name}
-          </h1>
+    <h1 className="text-3xl font-semibold text-richblack-5 md:text-4xl">
+      {selectedCategory.name}
+    </h1>
 
-          <p className="max-w-[870px] text-richblack-200">
-            {selectedCategory.description}
-          </p>
-        </div>
-      </section>
+    <p className="max-w-[870px] text-richblack-200">
+      {selectedCategory.description}
+    </p>
+  </div>
+</section>
+
 
       {/* ================= SECTION 1 ================= */}
       <section className="mx-auto w-full max-w-maxContent px-4 py-12">
