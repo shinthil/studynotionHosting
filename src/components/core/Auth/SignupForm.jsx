@@ -26,6 +26,7 @@ function SignupForm() {
 
   const [showPassword, setShowPassword] = useState(false)
   const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const { firstName, lastName, email, password, confirmPassword } = formData
 
@@ -38,33 +39,74 @@ function SignupForm() {
   }
 
   // Handle Form Submission
-  const handleOnSubmit = (e) => {
+  const handleOnSubmit = async (e) => {
     e.preventDefault()
+
+    // Validate form
+    if (!firstName || !lastName) {
+      toast.error("Please enter your first and last name")
+      return
+    }
+
+    if (!email) {
+      toast.error("Please enter your email address")
+      return
+    }
+
+    if (!password || !confirmPassword) {
+      toast.error("Please enter and confirm your password")
+      return
+    }
 
     if (password !== confirmPassword) {
       toast.error("Passwords Do Not Match")
       return
     }
-    const signupData = {
-      ...formData,
-      accountType,
+
+    if (password.length < 6) {
+      toast.error("Password must be at least 6 characters")
+      return
     }
 
-    // Setting signup data to state
-    // To be used after otp verification
-    dispatch(setSignupData(signupData))
-    // Send OTP to user for verification
-    dispatch(sendOtp(formData.email, navigate))
+    setLoading(true)
 
-    // Reset
-    setFormData({
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-    })
-    setAccountType(ACCOUNT_TYPE.STUDENT)
+    try {
+      // Combine form data
+      const signupData = {
+        ...formData,
+        accountType,
+      }
+
+      // Store in localStorage as backup
+      localStorage.setItem("signupData", JSON.stringify(signupData))
+
+      // Store in Redux state
+      dispatch(setSignupData(signupData))
+
+      // Send OTP
+      await dispatch(sendOtp(email))
+
+      // Show success message
+      toast.success("OTP sent successfully! Check your email.")
+
+      // Navigate to verify-email page
+      navigate("/verify-email")
+
+      // Reset form
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      })
+      setAccountType(ACCOUNT_TYPE.STUDENT)
+      
+    } catch (error) {
+      toast.error(error.message || "Failed to send OTP. Please try again.")
+    } finally {
+      setLoading(false)
+    }
   }
 
   // data to pass to Tab component
@@ -85,6 +127,7 @@ function SignupForm() {
     <div>
       {/* Tab */}
       <Tab tabData={tabData} field={accountType} setField={setAccountType} />
+      
       {/* Form */}
       <form onSubmit={handleOnSubmit} className="flex w-full flex-col gap-y-4">
         <div className="flex gap-x-4">
@@ -103,6 +146,7 @@ function SignupForm() {
                 boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
               }}
               className="w-full rounded-[0.5rem] bg-richblack-800 p-[12px] text-richblack-5"
+              disabled={loading}
             />
           </label>
           <label>
@@ -120,6 +164,7 @@ function SignupForm() {
                 boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
               }}
               className="w-full rounded-[0.5rem] bg-richblack-800 p-[12px] text-richblack-5"
+              disabled={loading}
             />
           </label>
         </div>
@@ -138,6 +183,7 @@ function SignupForm() {
               boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
             }}
             className="w-full rounded-[0.5rem] bg-richblack-800 p-[12px] text-richblack-5"
+            disabled={loading}
           />
         </label>
         <div className="flex gap-x-4">
@@ -156,6 +202,7 @@ function SignupForm() {
                 boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
               }}
               className="w-full rounded-[0.5rem] bg-richblack-800 p-[12px] pr-10 text-richblack-5"
+              disabled={loading}
             />
             <span
               onClick={() => setShowPassword((prev) => !prev)}
@@ -183,6 +230,7 @@ function SignupForm() {
                 boxShadow: "inset 0px -1px 0px rgba(255, 255, 255, 0.18)",
               }}
               className="w-full rounded-[0.5rem] bg-richblack-800 p-[12px] pr-10 text-richblack-5"
+              disabled={loading}
             />
             <span
               onClick={() => setShowConfirmPassword((prev) => !prev)}
@@ -196,15 +244,29 @@ function SignupForm() {
             </span>
           </label>
         </div>
+        
         <button
           type="submit"
-          className="mt-6 rounded-[8px] bg-yellow-50 py-[8px] px-[12px] font-medium text-richblack-900"
+          disabled={loading}
+          className={`mt-6 rounded-[8px] py-[8px] px-[12px] font-medium text-richblack-900 ${
+            loading ? "bg-yellow-200 cursor-not-allowed" : "bg-yellow-50 hover:bg-yellow-100"
+          }`}
         >
-          Create Account
+          {loading ? (
+            <span className="flex items-center justify-center">
+              <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-richblack-900" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              </svg>
+              Sending OTP...
+            </span>
+          ) : (
+            "Create Account"
+          )}
         </button>
       </form>
     </div>
   )
 }
-
+// chnge
 export default SignupForm
